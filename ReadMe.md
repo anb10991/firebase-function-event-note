@@ -91,6 +91,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/deleteEventNote?id=NwkK81wlkuBFdxmJQ2GM
+
         Result:
         {
             "result": "success",
