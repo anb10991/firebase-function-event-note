@@ -3,9 +3,13 @@
   - Param: start_time, end_time, title, description, author
   - Exra Param for EventNote: text
   - Return Value: 
+
     • Success(without EventNote): {"result":"success", "EventID":"..."}
+
     • Success(with EventNote): {"result":"success", "EventID":"...", "EventNoteID": "..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+    
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent
 
@@ -27,8 +31,11 @@
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent
   - Param: id, start_time, end_time, title, description, author
   - Return Value: 
+
     • Success: {"result":"success", "EventID":"..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent&id=vlnd0OAaiOeMcIFiApIN
 
@@ -42,8 +49,11 @@
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/deleteEvent
   - Param: id
   - Return Value: 
+
     • Success: {"result":"success", "EventID":"..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/deleteEvent?id=M4ajDYN7PpM00Ts9cNm3
 
@@ -57,8 +67,11 @@
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/createEventNote
   - Param: eventID, text, author
   - Return Value: 
+
     • Success: {"result":"success", "EventNoteID":"..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/createEventNote?eventID=vlnd0OAaiOeMcIFiApIN&text=world&author=talent
 
@@ -72,8 +85,11 @@
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/updateEventNote
   - Param: id, eventID, text, author
   - Return Value: 
+
     • Success: {"result":"success", "EventNoteID":"..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/updateEventNote?id=NwkK81wlkuBFdxmJQ2GM&text=world1&author=talent&eventID=vlnd0OAaiOeMcIFiApIN
 
@@ -87,8 +103,11 @@
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/deleteEventNote
   - Param: id
   - Return Value: 
+
     • Success: {"result":"success", "EventID":"..."}
+
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
   - Example: 
     • https://us-central1-talentproject-251200.cloudfunctions.net/deleteEventNote?id=NwkK81wlkuBFdxmJQ2GM
 
