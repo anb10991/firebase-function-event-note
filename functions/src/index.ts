@@ -78,24 +78,19 @@ exports.deleteEvent = functions.https.onRequest(async (req, res) => {
     if (!id) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        try {
-            // Delete from events table
-            await admin.firestore().collection('events').doc(id).delete();
-            // Find all eventnotes with this id
-            const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
-            if (!snapshot.empty) {
-                // Delete all related eventnotes
-                snapshot.forEach(doc => {
-                    const result = doc.ref.delete();
-                    console.log(result);
-                });
-            }
-            // Send back a message that we've succesfully deleted Event
-            res.json({result: 'success', EventID: id});
+        // Delete from events table
+        await admin.firestore().collection('events').doc(id).delete();
+        // Find all eventnotes with this id
+        const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
+        if (!snapshot.empty) {
+            // Delete all related eventnotes
+            snapshot.forEach(doc => {
+                const result = doc.ref.delete();
+                console.log(result);
+            });
         }
-        catch(error) {
-            res.json({result: 'failure', message: "Invalid ID"});
-        }
+        // Send back a message that we've succesfully deleted Event
+        res.json({result: 'success', EventID: id});
     }
 }); 
 
@@ -147,14 +142,9 @@ exports.deleteEventNote = functions.https.onRequest(async (req, res) => {
     if (!id ) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        try {
-            // Delete from eventnotes table
-            await admin.firestore().collection('eventnotes').doc(id).delete();
-            // Send back a message that we've succesfully deleted EventNotes
-            res.json({result: 'success', EventNoteID: id});
-        }
-        catch(error) {
-            res.json({result: 'failure', message: "Invalid ID"});
-        }
+        // Delete from eventnotes table
+        await admin.firestore().collection('eventnotes').doc(id).delete();
+        // Send back a message that we've succesfully deleted EventNotes
+        res.json({result: 'success', EventNoteID: id});
     }
 }); 
