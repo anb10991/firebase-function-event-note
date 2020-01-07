@@ -37,6 +37,8 @@
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
+               {result: 'failure', message: "Invalid ID"}
+
   - Example: 
 
     • https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent&id=vlnd0OAaiOeMcIFiApIN
@@ -93,6 +95,8 @@
     • Success: {"result":"success", "EventNoteID":"..."}
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
+               {result: 'failure', message: "Invalid ID"}
 
   - Example: 
 

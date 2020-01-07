@@ -55,16 +55,21 @@ exports.updateEvent = functions.https.onRequest(async (req, res) => {
         // Current Datetime
         const time_now = new Date(Date.now());
         // Update to events table
-        await admin.firestore().collection('events').doc(id).update({
-            start_time: start_time,
-            end_time: end_time,
-            title: title,
-            description: description,
-            updatedBy: author,
-            updatedAt: time_now
-        });
-        // Send back a message that we've succesfully updated Event
-        res.json({result: 'success', EventID: id});
+        try {
+            await admin.firestore().collection('events').doc(id).update({
+                start_time: start_time,
+                end_time: end_time,
+                title: title,
+                description: description,
+                updatedBy: author,
+                updatedAt: time_now
+            });
+            // Send back a message that we've succesfully updated Event
+            res.json({result: 'success', EventID: id});
+        }
+        catch(error) {
+            res.json({result: 'failure', message: "Invalid ID"});
+        }
     }
 }); 
 exports.deleteEvent = functions.https.onRequest(async (req, res) => {
@@ -73,19 +78,24 @@ exports.deleteEvent = functions.https.onRequest(async (req, res) => {
     if (!id) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Delete from events table
-        await admin.firestore().collection('events').doc(id).delete();
-        // Find all eventnotes with this id
-        const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
-        if (!snapshot.empty) {
-            // Delete all related eventnotes
-            snapshot.forEach(doc => {
-                const result = doc.ref.delete();
-                console.log(result);
-            });
+        try {
+            // Delete from events table
+            await admin.firestore().collection('events').doc(id).delete();
+            // Find all eventnotes with this id
+            const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
+            if (!snapshot.empty) {
+                // Delete all related eventnotes
+                snapshot.forEach(doc => {
+                    const result = doc.ref.delete();
+                    console.log(result);
+                });
+            }
+            // Send back a message that we've succesfully deleted Event
+            res.json({result: 'success', EventID: id});
         }
-        // Send back a message that we've succesfully deleted Event
-        res.json({result: 'success', EventID: id});
+        catch(error) {
+            res.json({result: 'failure', message: "Invalid ID"});
+        }
     }
 }); 
 
@@ -116,14 +126,19 @@ exports.updateEventNote = functions.https.onRequest(async (req, res) => {
         // Current Datetime
         const time_now = new Date(Date.now());
         // Update to eventnotes table
-        await admin.firestore().collection('eventnotes').doc(id).update({
-            eventID: eventID,
-            text: text,
-            createdBy: author,
-            createdAt: time_now
-        });
-        // Send back a message that we've succesfully updated EventNotes
-        res.json({result: 'success', EventNoteID: id});
+        try {
+            await admin.firestore().collection('eventnotes').doc(id).update({
+                eventID: eventID,
+                text: text,
+                createdBy: author,
+                createdAt: time_now
+            });
+            // Send back a message that we've succesfully updated EventNotes
+            res.json({result: 'success', EventNoteID: id});
+        }
+        catch(error) {
+            res.json({result: 'failure', message: "Invalid ID"});
+        }
     }
 }); 
 exports.deleteEventNote = functions.https.onRequest(async (req, res) => {
@@ -132,9 +147,14 @@ exports.deleteEventNote = functions.https.onRequest(async (req, res) => {
     if (!id ) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Delete from eventnotes table
-        await admin.firestore().collection('eventnotes').doc(id).delete();
-        // Send back a message that we've succesfully deleted EventNotes
-        res.json({result: 'success', EventNoteID: id});
+        try {
+            // Delete from eventnotes table
+            await admin.firestore().collection('eventnotes').doc(id).delete();
+            // Send back a message that we've succesfully deleted EventNotes
+            res.json({result: 'success', EventNoteID: id});
+        }
+        catch(error) {
+            res.json({result: 'failure', message: "Invalid ID"});
+        }
     }
 }); 
