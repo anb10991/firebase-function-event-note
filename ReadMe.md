@@ -20,6 +20,7 @@
             "EventID": "vlnd0OAaiOeMcIFiApIN",
             "EventNoteID": "ECufPaUCnmJ5yVJCvAPb"
         }
+
 ▶ Update Event Endpoint
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent
   - Param: id, start_time, end_time, title, description, author
@@ -47,6 +48,7 @@
             "result": "success",
             "EventID": "M4ajDYN7PpM00Ts9cNm3"
         }
+
 ▶ Create EventNote Endpoint
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/createEventNote
   - Param: eventID, text, author
@@ -60,6 +62,7 @@
             "result": "success",
             "EventNoteID": "nyePhuYAXbwz7H2rKPIF"
         }
+
 ▶ Update EventNote Endpoint
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/updateEventNote
   - Param: id, eventID, text, author
@@ -73,6 +76,7 @@
             "result": "success",
             "EventNoteID": "NwkK81wlkuBFdxmJQ2GM"
         }
+
 ▶ Delete EventNote Endpoint
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/deleteEventNote
   - Param: id
