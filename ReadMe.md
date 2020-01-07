@@ -9,8 +9,9 @@
     • Success(with EventNote): {"result":"success", "EventID":"...", "EventNoteID": "..."}
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
-    
+
   - Example: 
+
     • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent
 
         Result:
@@ -37,6 +38,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
   - Example: 
+
     • https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent&id=vlnd0OAaiOeMcIFiApIN
 
         Result:
@@ -55,6 +57,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
   - Example: 
+
     • https://us-central1-talentproject-251200.cloudfunctions.net/deleteEvent?id=M4ajDYN7PpM00Ts9cNm3
 
         Result:
@@ -73,6 +76,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
   - Example: 
+
     • https://us-central1-talentproject-251200.cloudfunctions.net/createEventNote?eventID=vlnd0OAaiOeMcIFiApIN&text=world&author=talent
 
         Result:
@@ -91,6 +95,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
   - Example: 
+
     • https://us-central1-talentproject-251200.cloudfunctions.net/updateEventNote?id=NwkK81wlkuBFdxmJQ2GM&text=world1&author=talent&eventID=vlnd0OAaiOeMcIFiApIN
 
         Result:
@@ -109,6 +114,7 @@
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
   - Example: 
+  
     • https://us-central1-talentproject-251200.cloudfunctions.net/deleteEventNote?id=NwkK81wlkuBFdxmJQ2GM
 
         Result:
