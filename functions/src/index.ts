@@ -10,141 +10,197 @@ import * as admin from 'firebase-admin';
 
 admin.initializeApp();
 
-exports.createEvent = functions.https.onRequest(async (req, res) => {
+export const createEvent = functions.https.onRequest(async (req, res) => {
     // Params for Event
     const { start_time, end_time, title, description, author } = req.query;
 
     if ( !start_time || !end_time || !title || !description || !author) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
+    } else if ( isNaN(Date.parse(start_time)) || isNaN(Date.parse(end_time)) || (Date.parse(start_time) > Date.parse(end_time))) {
+        res.json({result: 'failure', message: 'Please parse start/end time correctly!'});
     } else {
         // Params for Event Notes
         const { text } = req.query;
         // Current Datetime
         const time_now = new Date(Date.now());
         // Add to events table
-        const EventResult = await admin.firestore().collection('events').add({
-            start_time: start_time,
-            end_time: end_time,
-            title: title,
-            description: description,
-            createdBy: author,
-            createdAt: time_now,
-            updatedBy: author,
-            updatedAt: time_now
-        });
-        if (text) {
-            // Add to EventNote table
-            const EventNoteResult = await admin.firestore().collection('eventnotes').add({
-                eventID: EventResult.id,
-                text: text,
-                createdBy: author,
-                createdAt: time_now
-            });
-            res.json({result: 'success', EventID: EventResult.id, EventNoteID: EventNoteResult.id});
-        } else {
-            res.json({result: 'success', EventID: EventResult.id});
-        }
-    }
-});
-exports.updateEvent = functions.https.onRequest(async (req, res) => {
-    // Params
-    const { start_time, end_time, title, description, author, id } = req.query;
-    if (!start_time || !end_time || !title || !description || !author || !id) {
-        res.json({result: 'failure', message: 'Please parse all fields required!'});
-    } else {
-        // Current Datetime
-        const time_now = new Date(Date.now());
-        // Update to events table
         try {
-            await admin.firestore().collection('events').doc(id).update({
+            const EventResult = await admin.firestore().collection('events').add({
                 start_time: start_time,
                 end_time: end_time,
                 title: title,
                 description: description,
+                createdBy: author,
+                createdAt: time_now,
                 updatedBy: author,
                 updatedAt: time_now
             });
-            // Send back a message that we've succesfully updated Event
-            res.json({result: 'success', EventID: id});
+            if (text) {
+                // Add to EventNote table
+                const EventNoteResult = await admin.firestore().collection('eventnotes').add({
+                    eventID: EventResult.id,
+                    text: text,
+                    createdBy: author,
+                    createdAt: time_now
+                });
+                res.json({result: 'success', EventID: EventResult.id, EventNoteID: EventNoteResult.id});
+            } else {
+                res.json({result: 'success', EventID: EventResult.id});
+            }
         }
         catch(error) {
-            res.json({result: 'failure', message: "Invalid ID"});
+            res.json({result: 'failure', message: "Database Operation Failed!"});
+        }
+    }
+});
+export const updateEvent = functions.https.onRequest(async (req, res) => {
+    // Params
+    const { start_time, end_time, title, description, author, id } = req.query;
+    if (!start_time || !end_time || !title || !description || !author || !id) {
+        res.json({result: 'failure', message: 'Please parse all fields required!'});
+    } else if ( isNaN(Date.parse(start_time)) || isNaN(Date.parse(end_time)) || (Date.parse(start_time) > Date.parse(end_time))) {
+        res.json({result: 'failure', message: 'Please parse start/end time correctly!'});
+    } else {
+        const eventRef = admin.firestore().collection('events').doc(id);
+        const eventDoc = await eventRef.get();
+        if (!eventDoc.exists) {
+            res.json({result: 'failure', message: "Invalid Event ID"});
+        } else {
+            // Current Datetime
+            const time_now = new Date(Date.now());
+            // Update to events table
+            try {
+                await eventRef.update({
+                    start_time: start_time,
+                    end_time: end_time,
+                    title: title,
+                    description: description,
+                    updatedBy: author,
+                    updatedAt: time_now
+                });
+                // Send back a message that we've succesfully updated Event
+                res.json({result: 'success', EventID: id});
+            }
+            catch(error) {
+                res.json({result: 'failure', message: "Database Operation Failed!"});
+            }
         }
     }
 }); 
-exports.deleteEvent = functions.https.onRequest(async (req, res) => {
+export const deleteEvent = functions.https.onRequest(async (req, res) => {
     // Params
     const { id } = req.query;
     if (!id) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Delete from events table
-        await admin.firestore().collection('events').doc(id).delete();
-        // Find all eventnotes with this id
-        const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
-        if (!snapshot.empty) {
-            // Delete all related eventnotes
-            snapshot.forEach(doc => {
-                const result = doc.ref.delete();
-                console.log(result);
-            });
+        const eventRef = admin.firestore().collection('events').doc(id);
+        const eventDoc = await eventRef.get();
+        if (!eventDoc.exists) {
+            res.json({result: 'failure', message: "Invalid Event ID"});
+        } else {
+            try {
+                // Delete from events table
+                await eventRef.delete();
+                // Find all eventnotes with this id
+                const snapshot = await admin.firestore().collection('eventnotes').where('eventID', '==', id).get();
+                if (!snapshot.empty) {
+                    // Delete all related eventnotes
+                    snapshot.forEach(doc => {
+                        const result = doc.ref.delete();
+                        console.log(result);
+                    });
+                }
+                // Send back a message that we've succesfully deleted Event
+                res.json({result: 'success', EventID: id});
+            }
+            catch(error) {
+                res.json({result: 'failure', message: "Database Operation Failed!"});
+            }
         }
-        // Send back a message that we've succesfully deleted Event
-        res.json({result: 'success', EventID: id});
     }
 }); 
 
-exports.createEventNote = functions.https.onRequest(async (req, res) => {
+export const createEventNote = functions.https.onRequest(async (req, res) => {
     // Params for Event Notes
     const { text, author, eventID } = req.query;
     if (!eventID || !text || !author) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Current Datetime
-        const time_now = new Date(Date.now());
-        // Add to EventNote table
-        const EventNoteResult = await admin.firestore().collection('eventnotes').add({
-            eventID: eventID,
-            text: text,
-            createdBy: author,
-            createdAt: time_now
-        });
-        res.json({result: 'success', EventNoteID: EventNoteResult.id});
+        const eventDoc = await admin.firestore().collection('events').doc(eventID).get();
+        if (!eventDoc.exists) {
+            res.json({result: 'failure', message: "Invalid Event ID"});
+        } else {
+            try {
+                // Current Datetime
+                const time_now = new Date(Date.now());
+                // Add to EventNote table
+                const EventNoteResult = await admin.firestore().collection('eventnotes').add({
+                    eventID: eventID,
+                    text: text,
+                    createdBy: author,
+                    createdAt: time_now
+                });
+                res.json({result: 'success', EventNoteID: EventNoteResult.id});
+            }
+            catch(error) {
+                res.json({result: 'failure', message: "Database Operation Failed!"});
+            }
+        }
     }
 });
-exports.updateEventNote = functions.https.onRequest(async (req, res) => {
+export const updateEventNote = functions.https.onRequest(async (req, res) => {
     // Params
     const { text, author, id, eventID } = req.query;
     if (!id || !text || !author || !eventID) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Current Datetime
-        const time_now = new Date(Date.now());
-        // Update to eventnotes table
-        try {
-            await admin.firestore().collection('eventnotes').doc(id).update({
-                eventID: eventID,
-                text: text,
-                createdBy: author,
-                createdAt: time_now
-            });
-            // Send back a message that we've succesfully updated EventNotes
-            res.json({result: 'success', EventNoteID: id});
-        }
-        catch(error) {
-            res.json({result: 'failure', message: "Invalid ID"});
+        const eventDoc = await admin.firestore().collection('events').doc(eventID).get();
+        const eventNoteRef = admin.firestore().collection('eventnotes').doc(id);
+        const eventNoteDoc = await eventNoteRef.get();
+        if (!eventDoc.exists) {
+            res.json({result: 'failure', message: "Invalid Event ID"});
+        } else if (!eventNoteDoc.exists) {
+            res.json({result: 'failure', message: "Invalid EventNote ID"});
+        } else {
+            // Current Datetime
+            const time_now = new Date(Date.now());
+            // Update to eventnotes table
+            try {
+                await eventNoteRef.update({
+                    eventID: eventID,
+                    text: text,
+                    createdBy: author,
+                    createdAt: time_now
+                });
+                // Send back a message that we've succesfully updated EventNotes
+                res.json({result: 'success', EventNoteID: id});
+            }
+            catch(error) {
+                res.json({result: 'failure', message: "Database Operation Failed!"});
+            }
         }
     }
 }); 
-exports.deleteEventNote = functions.https.onRequest(async (req, res) => {
+export const deleteEventNote = functions.https.onRequest(async (req, res) => {
     // Params
     const { id } = req.query;
     if (!id ) {
         res.json({result: 'failure', message: 'Please parse all fields required!'});
     } else {
-        // Delete from eventnotes table
-        await admin.firestore().collection('eventnotes').doc(id).delete();
-        // Send back a message that we've succesfully deleted EventNotes
-        res.json({result: 'success', EventNoteID: id});
+        const eventNoteRef = admin.firestore().collection('eventnotes').doc(id);
+        const eventNoteDoc = await eventNoteRef.get();
+        if (!eventNoteDoc.exists) {
+            res.json({result: 'failure', message: "Invalid EventNote ID"});
+        } else {
+            try {
+                // Delete from eventnotes table
+                await eventNoteRef.delete();
+                // Send back a message that we've succesfully deleted EventNotes
+                res.json({result: 'success', EventNoteID: id});
+            }
+            catch(error) {
+                res.json({result: 'failure', message: "Database Operation Failed!"});
+            }
+        }
     }
 }); 

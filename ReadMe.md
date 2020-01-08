@@ -1,3 +1,4 @@
+
 ▶ Create Event Endpoint
   - Endpoint:  https://us-central1-talentproject-251200.cloudfunctions.net/createEvent
   - Param: start_time, end_time, title, description, author
@@ -10,16 +11,19 @@
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
+               {result: 'failure', message: 'Please parse start/end time correctly!'}
+
+               {result: 'failure', message: "Database Operation Failed!"}
   - Example: 
 
-    • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent
+    • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=12-4-1995 00:12:00&end_time=12-4-1995 00:13:00&title=class1&description=mathclass&author=talent
 
         Result:
         {
             "result": "success",
             "EventID": "M4ajDYN7PpM00Ts9cNm3"
         }
-    • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent&text=hello
+    • https://us-central1-talentproject-251200.cloudfunctions.net/createEvent?start_time=12-4-1995 00:12:00&end_time=12-4-1995 00:13:00&title=class1&description=mathclass&author=talent&text=hello
 
         Result:
         {
@@ -37,11 +41,15 @@
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
-               {result: 'failure', message: "Invalid ID"}
+               {result: 'failure', message: "Invalid Event ID"}
+
+               {result: 'failure', message: 'Please parse start/end time correctly!'}
+
+               {result: 'failure', message: "Database Operation Failed!"}
 
   - Example: 
 
-    • https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent?start_time=8:00&end_time=9:00&title=class1&description=mathclass&author=talent&id=vlnd0OAaiOeMcIFiApIN
+    • https://us-central1-talentproject-251200.cloudfunctions.net/updateEvent?start_time=12-4-1995 00:12:00&end_time=12-4-1995 00:13:00&title=class1&description=mathclass&author=talent&id=vlnd0OAaiOeMcIFiApIN
 
         Result:
         {
@@ -57,6 +65,10 @@
     • Success: {"result":"success", "EventID":"..."}
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
+               {result: 'failure', message: "Invalid Event ID"}
+
+               {result: 'failure', message: "Database Operation Failed!"}
 
   - Example: 
 
@@ -76,6 +88,10 @@
     • Success: {"result":"success", "EventNoteID":"..."}
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+       
+               {result: 'failure', message: "Invalid Event ID"}
+
+               {result: 'failure', message: "Database Operation Failed!"}
 
   - Example: 
 
@@ -96,7 +112,11 @@
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
 
-               {result: 'failure', message: "Invalid ID"}
+               {result: 'failure', message: "Invalid Event ID"}
+
+               {result: 'failure', message: "Invalid EventNote ID"}
+
+               {result: 'failure', message: "Database Operation Failed!"}
 
   - Example: 
 
@@ -116,6 +136,10 @@
     • Success: {"result":"success", "EventNoteID":"..."}
 
     • Failure: {"result":"failure", "message":"Please parse all fields required!"}
+
+               {result: 'failure', message: "Invalid EventNote ID"}
+
+               {result: 'failure', message: "Database Operation Failed!"}
 
   - Example: 
 
